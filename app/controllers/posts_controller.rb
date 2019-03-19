@@ -13,8 +13,8 @@ class PostsController < ApplicationController
 	end
 
 	def create
-		post = Post.create(params[:post])
-		redirect_to post_path(post)
+		@post = Post.create(strong_params(:title, :description, :category_id))
+		redirect_to post_path(@post)
 	end
 
 	def edit
@@ -23,8 +23,14 @@ class PostsController < ApplicationController
 	end
 
 	def update
-		post = Post.find(params[:id])
-		post.update(params.require(:post))
-		redirect_to post_path(post)
+		@post = Post.find(params[:id])
+		@post.update(strong_params(:title, :description, :category_id))
+		redirect_to post_path(@post)
+	end
+
+	private
+
+	def strong_params(*args)
+		params.require(:post).permit(*args)
 	end
 end
